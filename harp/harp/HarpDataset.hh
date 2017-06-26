@@ -1,11 +1,11 @@
 ///////////////////////////////////////////////////////////////////////////////
 // HarpDataset: data for a given beam, target, and output particle type (pi-, pi+)
-// beam bins: 0: 3 GeV, 1: 5 GeV, 2: 8 GeV, 3: 12 GeV
+// 4 incident beam bins: 0: 3 GeV, 1: 5 GeV, 2: 8 GeV, 3: 12 GeV
 //
 // angular histograms : 0.15 - 2.15 radians, 10 bins, 0.2 rad bin
 // momentum histograms - variable binning:
 //
-// for the proton beam and pi+/pi- output HARP has 10 momentum slices:
+// for the proton beam and pi+/pi- output HARP has 11 momentum slices:
 //
 // 0.10-0.15
 // 0.15-0.20
@@ -13,6 +13,7 @@
 // 0.25-0.30
 // 0.30-0.35
 // 0.35-0.40
+// 0.40-0.45
 // 0.45-0.50
 // 0.50-0.60
 // 0.60-0.70
