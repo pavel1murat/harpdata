@@ -1,0 +1,21 @@
+#!/usr/bin/env python
+#
+# Script to build the files found in this directory.
+#------------------------------------------------------------------------------
+import os
+Import('env')
+Import('harp_helper')
+
+helper = harp_helper();
+
+helper.handle_dictionaries();
+
+skip_list = []
+
+rootlibs = env['ROOTLIBS']
+libs          = [rootlibs ];
+
+list_of_cc_files = Glob('*.cc',strings=True);
+helper.set_libname("harpdata");
+helper.build_libs(list_of_cc_files,skip_list,libs);
+# print "tmpdir:"+env['TMP_LIB_DIR']
