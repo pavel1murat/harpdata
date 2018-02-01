@@ -113,7 +113,7 @@ class harp_helper:
 
     def compile_fortran(self,list_of_f_files, skip_list = []):
         if (self._debug):
-            print  self.dirname+"[build_libs]: list_of_f_files:"+self.subdir,list_of_f_files
+            print(self.dirname+"[build_libs]: list_of_f_files:",self.subdir,list_of_f_files)
 
         for f in list_of_f_files:
             if (not f in skip_list):
@@ -123,7 +123,7 @@ class harp_helper:
 
     def build_libs(self,list_of_cc_files, skip_list = [],libs = []):
         if (self._debug):
-            print  self.dirname+"[build_libs]: list_of_cc_files:"+self.subdir,list_of_cc_files
+            print(self.dirname+"[build_libs]: list_of_cc_files:"+self.subdir,list_of_cc_files)
 
         for cc in list_of_cc_files:
             if (not cc in skip_list):
@@ -141,7 +141,7 @@ class harp_helper:
 
     def build_modules(self,list_of_module_files, skip_list, libs = []):
         if (self._debug):
-            print self.dirname+"[build_modules]: list_of_module_files in harp/"+self.subdir," : ",list_of_module_files
+            print(self.dirname+"[build_modules]: list_of_module_files in harp/"+self.subdir," : ",list_of_module_files);
 
         for module in list_of_module_files:
             if (not module in skip_list):
