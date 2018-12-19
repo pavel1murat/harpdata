@@ -4,9 +4,9 @@
 #------------------------------------------------------------------------------
 import os
 Import('env')
-Import('harp_helper')
+Import('stntuple_helper')
 
-helper = harp_helper();
+helper = stntuple_helper(env);
 
 helper.handle_dictionaries();
 
@@ -16,6 +16,5 @@ rootlibs = env['ROOTLIBS']
 libs          = [rootlibs ];
 
 list_of_cc_files = Glob('*.cc',strings=True);
-helper.set_libname("harpdata");
 helper.build_libs(list_of_cc_files,skip_list,libs);
 # print "tmpdir:"+env['TMP_LIB_DIR']
