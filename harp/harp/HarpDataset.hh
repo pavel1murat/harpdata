@@ -32,14 +32,16 @@
 // 1.95-2.15
 //
 //-----------------------------------------------------------------------------
-#ifndef __harp_hh__
-#define __harp_hh__
+#ifndef __harp_dataset_hh__
+#define __harp_dataset_hh__
 
 #include "TH1.h"
 #include "TString.h"
 #include "TNtuple.h"
 
-class HarpDataset {
+#include "Dataset.hh"
+
+class HarpDataset : public Dataset {
 public:
   enum { kNBeamBins       =  4 };
   enum { kNMomentumSlices = 11 };
@@ -51,12 +53,6 @@ public:
   };
 
 public:
-  TString  fBeam;
-  TString  fTarget;			   // 
-  TString  fParticle;			   // 
-  TString  fFn;				   // filename
-  TNtuple* fNtuple;			   // ntuple with the data
-
   Hist_t   fHist;
 					   // data
   float    tmin;
@@ -70,7 +66,7 @@ public:
   float    fMomentum[kNMomentumSlices+1];
 
   HarpDataset();
-  HarpDataset(const char* Beam, const char* Target, const char* Particle, const char* Fn);
+  HarpDataset(int ID, const char* Beam, const char* Target, const char* Particle, const char* Fn);
   
   void  BookHistograms();
   void  FillMomentumHistograms();
@@ -81,7 +77,7 @@ public:
   int   GetBinNumber    (TH1* Hist, float X);
 
   void  InitLimits();
-  
+
   TH1F* GetMomentumHist(int BeamBin, int ThetaSlice   ) {
     return fHist.fXsVsMomentum [BeamBin][ThetaSlice];
   }

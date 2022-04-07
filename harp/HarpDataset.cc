@@ -149,40 +149,44 @@ void HarpDataset::BookHistograms() {
 //-----------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
-HarpDataset::HarpDataset(const char* Beam, const char* Target, const char* Particle, const char* Fn) {
+HarpDataset::HarpDataset(int ID, const char* Beam, const char* Target, const char* Particle, const char* Fn) {
+  fID       = ID;
   fBeam     = Beam;
   fTarget   = Target;
   fParticle = Particle;
   fFn       = Fn;
 
-  fNtuple   = new TNtuple("harp","harp","tmin:tmax:pmin:pmax:x3:ex3:x5:ex5:x8:ex8:x12:ex12");
-  fNtuple->ReadFile(Fn);
+  if (ID == 1) {
+    fNtuple   = new TNtuple("harp","harp","tmin:tmax:pmin:pmax:x3:ex3:x5:ex5:x8:ex8:x12:ex12");
+    fNtuple->ReadFile(Fn);
 
-  InitLimits();
-  BookHistograms();
+    InitLimits();
+    BookHistograms();
   
-  float* var;
+    float* var;
 
-  int n = fNtuple->GetEntries();
-  for (int i=0; i<n; i++) {
-    fNtuple->GetEntry(i);
-    var    = fNtuple->GetArgs();
-    //    printf("%10.3f %10.3f %10.3f\n",var[0],var[1],var[2]);
-    tmin   = var[0];
-    tmax   = var[1];
-    pmin   = var[2];
-    pmax   = var[3];
-					// 4 cross sections - at 3,5,8, and 12 GeV/c
-    xs [0] = var[ 4];
-    exs[0] = var[ 5];
-    xs [1] = var[ 6];
-    exs[1] = var[ 7];
-    xs [2] = var[ 8];
-    exs[2] = var[ 9];
-    xs [3] = var[10];
-    exs[3] = var[11];
-
-    FillMomentumHistograms();
-    FillThetaHistograms   ();
+    int n = fNtuple->GetEntries();
+    for (int i=0; i<n; i++) {
+      fNtuple->GetEntry(i);
+      var    = fNtuple->GetArgs();
+      //    printf("%10.3f %10.3f %10.3f\n",var[0],var[1],var[2]);
+      tmin   = var[0];
+      tmax   = var[1];
+      pmin   = var[2];
+      pmax   = var[3];
+      // 4 cross sections - at 3,5,8, and 12 GeV/c
+      xs [0] = var[ 4];
+      exs[0] = var[ 5];
+      xs [1] = var[ 6];
+      exs[1] = var[ 7];
+      xs [2] = var[ 8];
+      exs[2] = var[ 9];
+      xs [3] = var[10];
+      exs[3] = var[11];
+      
+      FillMomentumHistograms();
+      FillThetaHistograms   ();
+    }
   }
+    
 }
