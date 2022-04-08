@@ -53,6 +53,8 @@ int HarpDataset::GetBinNumber(TH1* Hist, float X) {
 void HarpDataset::FillMomentumHistograms() {
   // 1. get theta slice - index of the dsigma/dp histograms
 
+  if (xs < 0) return;
+
   int slice = GetThetaSlice(tmin,tmax);
   
   if (slice < 0) {
@@ -75,6 +77,8 @@ void HarpDataset::FillMomentumHistograms() {
 //-----------------------------------------------------------------------------
 void HarpDataset::FillThetaHistograms() {
   
+  if (xs < 0) return;
+
   int slice = GetMomentumSlice(pmin,pmax);
 
   if (slice < 0) {

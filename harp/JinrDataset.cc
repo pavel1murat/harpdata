@@ -53,6 +53,7 @@ int JinrDataset::GetBinNumber(TH1* Hist, float X) {
 void JinrDataset::FillMomentumHistograms() {
   // 1. get theta slice - index of the dsigma/dp histograms
 
+  if (xs < 0) return;
   int slice = GetThetaSlice(tmin,tmax);
   
   if (slice < 0) {
@@ -75,6 +76,8 @@ void JinrDataset::FillMomentumHistograms() {
 //-----------------------------------------------------------------------------
 void JinrDataset::FillThetaHistograms() {
   
+  if (xs < 0) return;
+
   int slice = GetMomentumSlice(pmin,pmax);
 
   if (slice < 0) {
@@ -181,8 +184,8 @@ JinrDataset::JinrDataset(int ID, const char* Beam, const char* Target, const cha
     ekin   = var[2];
     p      = var[3];
     e      = ekin+pion_mass;
-    xs     = var[ 4]*(a/e)*(2*M_PI)*p*p/1.e3;  // convert millbarns to barns..
-    exs    = var[ 5]*(a/e)*(2*M_PI)*p*p/1.e3;
+    xs     = var[ 4]*(a/e)*(2*M_PI)*p*p/1.e3*sin((tmin+tmax)/2);  // convert millbarns to barns..
+    exs    = var[ 5]*(a/e)*(2*M_PI)*p*p/1.e3*sin((tmin+tmax)/2);
     pmin   = var[6];
     pmax   = var[7];
     
