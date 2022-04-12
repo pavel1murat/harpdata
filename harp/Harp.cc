@@ -24,9 +24,10 @@ int Harp::InitDatasets() {
 // official HARP datasets for Pb and Ta
 //-----------------------------------------------------------------------------
   ds = new HarpDataset(1,"proton","Ta","pi-",
-		       Form("%s/PhysRevC.77.055207/harp_prot_Ta_pim_data.txt",HarpDataDir));
+		       Form("%s/PhysRevC.77.055207/harp_prot_Ta_pim_data_v2.txt",HarpDataDir));
   fListOfDatasets->Add(ds);
 
+  // need to update the data
   ds = new HarpDataset(1,"proton","Ta","pi+",
 		       Form("%s/PhysRevC.77.055207/harp_prot_Ta_pip_data.txt",HarpDataDir));
   fListOfDatasets->Add(ds);

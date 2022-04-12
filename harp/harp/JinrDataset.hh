@@ -48,12 +48,15 @@
 
 class JinrDataset : public Dataset {
 public:
-  enum { kNMomentumSlices = 15 };
+  enum { kNMomentumSlices = 16 }; // first bin empty
   enum { kNThetaSlices    =  4 };
+  enum { kNBeamMomenta    =  1 };
 
   struct Hist_t {
-    TH1F*    fXsVsTheta    [kNMomentumSlices]; // momentum slices
-    TH1F*    fXsVsMomentum [kNThetaSlices   ]; // theta    slices
+    TH1F*    fD2xDpDtVsTheta    [kNMomentumSlices]; // momentum slices
+    TH1F*    fD2xDpDtVsMomentum [kNThetaSlices   ]; // theta    slices
+    TH1F*    fD3xDp3VsTheta     [kNMomentumSlices]; // momentum    slices
+    TH1F*    fD3xDp3VsEkin      [kNThetaSlices   ]; // theta    slices
   };
 
 public:
@@ -63,11 +66,17 @@ public:
   float    tmax;
   float    pmin;
   float    pmax;
+  float    ekmin;
+  float    ekmax;
   float    xs ;			   // cross sections (3,5,8,12 GeV)
   float    exs;			   // cross section errors
+  float    d3xdp3;
+  float    ed3xdp3;
+  float    ekin;
 
   float    fTheta   [kNThetaSlices+1   ];
   float    fMomentum[kNMomentumSlices+1];
+  float    fEkin    [kNMomentumSlices+1];
 
   JinrDataset();
   JinrDataset(int ID, const char* Beam, const char* Target, const char* Particle, const char* Fn);
@@ -75,12 +84,17 @@ public:
   virtual void  BookHistograms();
   virtual void  FillMomentumHistograms();
   virtual void  FillThetaHistograms   ();
+					// initial data come in E(kin)
+  void          FillD3xDp3EkinHistograms ();
+  virtual void  FillD3xDp3ThetaHistograms();
 
   virtual int   GetMomentumSlice(float PMin , float PMax );
   virtual int   GetThetaSlice   (float ThMin, float ThMax);
   virtual int   GetBinNumber    (TH1*  Hist , float X    );
 
   virtual void  InitLimits();
+
+  TH1F*         GetEkinHist    (int BeamBin, int ThetaSlice);
 
   virtual TH1F* GetMomentumHist(int BeamBin, int ThetaSlice);
   
