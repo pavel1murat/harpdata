@@ -9,8 +9,10 @@ JinrDataset::JinrDataset() {
 int JinrDataset::GetMomentumSlice(float PMin, float PMax) {
   int ind(-1);
 
+  float p = (PMin+PMax)/2;
+  
   for (int i=0; i<kNMomentumSlices; i++) {
-    if (fabs(PMin-fMomentum[i]) < 0.01) {
+    if ((p>=fMomentum[i]) and (p<=fMomentum[i+1])) { 
       ind = i;
       break;
     }
@@ -24,9 +26,11 @@ int JinrDataset::GetMomentumSlice(float PMin, float PMax) {
 //-----------------------------------------------------------------------------  
 int JinrDataset::GetThetaSlice(float ThMin, float ThMax) {
   int ind(-1);
+
+  float th = (ThMin+ThMax)/2;
   
   for (int i=0; i<kNThetaSlices; i++) {
-    if (fabs(ThMin-fTheta[i]) < 0.01) {
+    if ((fabs(th>=fTheta[i]) and (th<=fTheta[i+1]))) {
       ind = i;
       break;
     }
@@ -35,22 +39,6 @@ int JinrDataset::GetThetaSlice(float ThMin, float ThMax) {
   printf("JinrDataset::GetThetaSlice: ThMin, ThMax: %10.3f %10.3f %3i\n",ThMin, ThMax, ind);
 
   return ind;
-}
-
-//-----------------------------------------------------------------------------
-int JinrDataset::GetBinNumber(TH1* Hist, float X) {
-  int bin(-1);
-  float xmin, xmax;
-  int nbins = Hist->GetNbinsX();
-  for (int i=1; i<=nbins; i++) {
-    xmin = Hist->GetBinLowEdge(i);
-    xmax = xmin+Hist->GetBinWidth(i);
-    if ((X>=xmin) && (X<xmax)) {
-      bin = i;
-      break;
-    }
-  }
-  return bin;
 }
 
 //-----------------------------------------------------------------------------
@@ -67,7 +55,7 @@ void JinrDataset::FillMomentumHistograms() {
   else {
     float p = (pmin+pmax)/2;
     for (int ibeam=0; ibeam<kNBeamMomenta; ibeam++) {
-      int bin = GetBinNumber(fHist.fD2xDpDtVsMomentum[0],p);
+      int bin = fHist.fD2xDpDtVsMomentum[slice]->FindBin(p);
       if (bin > 0) {
 	fHist.fD2xDpDtVsMomentum[slice]->SetBinContent(bin,xs );
 	fHist.fD2xDpDtVsMomentum[slice]->SetBinError  (bin,exs);
@@ -90,12 +78,14 @@ void JinrDataset::FillD3xDp3EkinHistograms() {
 	   tmin,tmax,slice);
   }
   else {
+    TH1F* h = fHist.fD3xDp3VsEkin[slice];
+    
     for (int ibeam=0; ibeam<kNBeamMomenta; ibeam++) {
-      int bin = GetBinNumber(fHist.fD3xDp3VsEkin[0],ekin);
-      printf("JinrDataset::FillD3xDp3EkinHistograms bin: %3i\n", bin);
+      int bin = h->FindBin(ekin);
+      printf("JinrDataset::FillD3xDp3EkinHistograms bin: %10.3f %3i\n", ekin,bin);
       if (bin > 0) {
-	fHist.fD3xDp3VsEkin[slice]->SetBinContent(bin,d3xdp3 );
-	fHist.fD3xDp3VsEkin[slice]->SetBinError  (bin,ed3xdp3);
+	h->SetBinContent(bin,d3xdp3 );
+	h->SetBinError  (bin,ed3xdp3);
       }
     }
   }
@@ -157,7 +147,7 @@ void JinrDataset::FillD3xDp3ThetaHistograms() {
 //-----------------------------------------------------------------------------
 void JinrDataset::InitLimits() {
   float theta_limit[kNThetaSlices+1] = {
-    0.00, 0.17, 0.35, 0.52, 0.70
+    0.00, 0.17, 0.35, 0.52, 0.70, 0.87, 1.05, 1.22, 1.40, 1.57, 1.92, 2.27, 3.14
   };
 
   float momentum_limit[kNMomentumSlices+1] = {
@@ -190,29 +180,31 @@ void JinrDataset::InitLimits() {
 void JinrDataset::BookHistograms() {
   char name[200], title[200];
   
-  float mom_lower[kNMomentumSlices+1] = {
-    0.00, 0.20, 0.40, 0.60, 0.80, 1.00, 1.20, 1.40, 1.60, 1.80, 2.00, 2.20, 2.40,
-    2.60, 2.80, 3.00, 3.20
-  };
+  // float mom_lower[kNMomentumSlices+1] = {
+  //   0.00, 0.20, 0.40, 0.60, 0.80, 1.00, 1.20, 1.40, 1.60, 1.80, 2.00, 2.20, 2.40,
+  //   2.60, 2.80, 3.00, 3.20
+  // };
   
-  float ekin_lower[kNMomentumSlices+1] = {
-    0.00, 0.10, 0.30, 0.50, 0.70, 0.90, 1.10, 1.30, 1.50, 1.70, 1.90, 2.10, 2.30,
-    2.50, 2.70, 2.90, 3.10
-  };
+  // float ekin_lower[kNMomentumSlices+1] = {
+  //   0.00, 0.10, 0.30, 0.50, 0.70, 0.90, 1.10, 1.30, 1.50, 1.70, 1.90, 2.10, 2.30,
+  //   2.50, 2.70, 2.90, 3.10
+  // };
   
   TH1::AddDirectory(0);
 
   for (int i=0; i<kNThetaSlices; i++) {
     sprintf(name ,"d2sigma_dp_dth_vs_mom_%02i",i);
     sprintf(title,"JINR d2#sigma/dpd#theta vs P, %5.2f < #theta < %5.2f",fTheta[i],fTheta[i+1]);
-    fHist.fD2xDpDtVsMomentum[i] = new TH1F(name,title,kNMomentumSlices,mom_lower);
+    //    fHist.fD2xDpDtVsMomentum[i] = new TH1F(name,title,kNMomentumSlices,mom_lower);
+    fHist.fD2xDpDtVsMomentum[i] = new TH1F(name,title,250,0,5);
     fHist.fD2xDpDtVsMomentum[i]->SetMarkerStyle(20);
     fHist.fD2xDpDtVsMomentum[i]->GetXaxis()->SetTitle("P, GeV/c");
     fHist.fD2xDpDtVsMomentum[i]->SetStats(0);
 
     sprintf(name ,"d3xdp3_vs_ekin_%02i",i);
     sprintf(title,"JINR (E/A) #times d3#sigma/dp3 vs E(kin), %5.2f < #theta < %5.2f",fTheta[i],fTheta[i+1]);
-    fHist.fD3xDp3VsEkin[i] = new TH1F(name,title,kNMomentumSlices,ekin_lower);
+    //    fHist.fD3xDp3VsEkin[i] = new TH1F(name,title,kNMomentumSlices,ekin_lower);
+    fHist.fD3xDp3VsEkin[i] = new TH1F(name,title,250,0,5.);
     fHist.fD3xDp3VsEkin[i]->SetMarkerStyle(20);
     fHist.fD3xDp3VsEkin[i]->GetXaxis()->SetTitle("Ekin, GeV");
     fHist.fD3xDp3VsEkin[i]->SetStats(0);
@@ -221,14 +213,16 @@ void JinrDataset::BookHistograms() {
   for (int i=0; i<kNMomentumSlices; i++) {
     sprintf(name,"d2sigma_dp_dth_vs_th_%02i",i);
     sprintf(title,"JINR d^{2}#sigma/dpd#theta vs #theta, %4.2f < P < %4.2f",fMomentum[i],fMomentum[i+1]);
-    fHist.fD2xDpDtVsTheta[i] = new TH1F(name,title,16,-0.05,3.15);
+    //    fHist.fD2xDpDtVsTheta[i] = new TH1F(name,title,16,-0.05,3.15);
+    fHist.fD2xDpDtVsTheta[i] = new TH1F(name,title,160,-0.05,3.15);
     fHist.fD2xDpDtVsTheta[i]->SetMarkerStyle(20);
     fHist.fD2xDpDtVsTheta[i]->GetXaxis()->SetTitle("#theta, rad");
     fHist.fD2xDpDtVsTheta[i]->SetStats(0);
 
     sprintf(name,"d3sigma_dp3_vs_th_%02i",i);
     sprintf(title,"JINR d^{3}#sigma/dp^{3} vs #theta, %4.2f < P < %4.2f",fMomentum[i],fMomentum[i+1]);
-    fHist.fD3xDp3VsTheta[i] = new TH1F(name,title,16,-0.05,3.15);
+    //    fHist.fD3xDp3VsTheta[i] = new TH1F(name,title,16,-0.05,3.15);
+    fHist.fD3xDp3VsTheta[i] = new TH1F(name,title,160,-0.05,3.15);
     fHist.fD3xDp3VsTheta[i]->SetMarkerStyle(20);
     fHist.fD3xDp3VsTheta[i]->GetXaxis()->SetTitle("#theta, rad");
     fHist.fD3xDp3VsTheta[i]->SetStats(0);

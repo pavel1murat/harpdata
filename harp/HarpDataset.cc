@@ -63,10 +63,10 @@ void HarpDataset::FillMomentumHistograms() {
   else {
     float p = (pmin+pmax)/2;
     for (int ibeam=0; ibeam<4; ibeam++) {
-      int bin = GetBinNumber(fHist.fXsVsMomentum[ibeam][0],p);
+      int bin = GetBinNumber(fHist.fD2xDpDtVsMomentum[ibeam][0],p);
       if (bin > 0) {
-	fHist.fXsVsMomentum[ibeam][slice]->SetBinContent(bin,xs [ibeam]);
-	fHist.fXsVsMomentum[ibeam][slice]->SetBinError  (bin,exs[ibeam]);
+	fHist.fD2xDpDtVsMomentum[ibeam][slice]->SetBinContent(bin,xs [ibeam]);
+	fHist.fD2xDpDtVsMomentum[ibeam][slice]->SetBinError  (bin,exs[ibeam]);
       }
     }
   }
@@ -87,10 +87,10 @@ void HarpDataset::FillThetaHistograms() {
   else {
     float theta = (tmin+tmax)/2;
     for (int ibeam=0; ibeam<4; ibeam++) {
-      int bin = GetBinNumber(fHist.fXsVsTheta[ibeam][0],theta);
+      int bin = GetBinNumber(fHist.fD2xDpDtVsTheta[ibeam][0],theta);
       if (bin > 0) {
-	fHist.fXsVsTheta[ibeam][slice]->SetBinContent(bin,xs [ibeam]);
-	fHist.fXsVsTheta[ibeam][slice]->SetBinError  (bin,exs[ibeam]);
+	fHist.fD2xDpDtVsTheta[ibeam][slice]->SetBinContent(bin,xs [ibeam]);
+	fHist.fD2xDpDtVsTheta[ibeam][slice]->SetBinError  (bin,exs[ibeam]);
       }
     }
   }
@@ -121,9 +121,9 @@ void HarpDataset::InitLimits() {
 void HarpDataset::BookHistograms() {
   char name[200], title[200];
   
-  float mom_lower[] = {
-    0.00, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.60, 0.70, 0.80
-  };
+  // float mom_lower[] = {
+  //   0.00, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.60, 0.70, 0.80
+  // };
   
   TH1::AddDirectory(0);
 
@@ -131,10 +131,11 @@ void HarpDataset::BookHistograms() {
     for (int i=0; i<kNThetaSlices; i++) {
       sprintf(name ,"d2sigma_dp_dth_vs_mom_%i_%02i",ibeam,i);
       sprintf(title,"HARP d2#sigma/dpd#theta vs P, %5.2f < #theta < %5.2f",fTheta[i],fTheta[i+1]);
-      fHist.fXsVsMomentum[ibeam][i] = new TH1F(name,title,13,mom_lower);
-      fHist.fXsVsMomentum[ibeam][i]->SetMarkerStyle(20);
-      fHist.fXsVsMomentum[ibeam][i]->GetXaxis()->SetTitle("P, GeV/c");
-      fHist.fXsVsMomentum[ibeam][i]->SetStats(0);
+      //      fHist.fD2xDpDtVsMomentum[ibeam][i] = new TH1F(name,title,13,mom_lower);
+      fHist.fD2xDpDtVsMomentum[ibeam][i] = new TH1F(name,title,250,0,5);
+      fHist.fD2xDpDtVsMomentum[ibeam][i]->SetMarkerStyle(20);
+      fHist.fD2xDpDtVsMomentum[ibeam][i]->GetXaxis()->SetTitle("P, GeV/c");
+      fHist.fD2xDpDtVsMomentum[ibeam][i]->SetStats(0);
     }
   }
 
@@ -142,10 +143,10 @@ void HarpDataset::BookHistograms() {
     for (int i=0; i<kNMomentumSlices; i++) {
       sprintf(name,"d2sigma_dp_dth_vs_th_%i_%02i",ibeam,i);
       sprintf(title,"HARP d^{2}#sigma/dpd#theta vs #theta, %4.2f < P < %4.2f",fMomentum[i],fMomentum[i+1]);
-      fHist.fXsVsTheta[ibeam][i] = new TH1F(name,title,16,-0.05,3.15);
-      fHist.fXsVsTheta[ibeam][i]->SetMarkerStyle(20);
-      fHist.fXsVsTheta[ibeam][i]->GetXaxis()->SetTitle("#theta, rad");
-      fHist.fXsVsTheta[ibeam][i]->SetStats(0);
+      fHist.fD2xDpDtVsTheta[ibeam][i] = new TH1F(name,title,160,-0.05,3.15);
+      fHist.fD2xDpDtVsTheta[ibeam][i]->SetMarkerStyle(20);
+      fHist.fD2xDpDtVsTheta[ibeam][i]->GetXaxis()->SetTitle("#theta, rad");
+      fHist.fD2xDpDtVsTheta[ibeam][i]->SetStats(0);
     }
   }
 }

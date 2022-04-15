@@ -1,6 +1,8 @@
 #!/usr/bin/python
 #------------------------------------------------------------------------------
-# reads input .csv file , strips headers and markers, saves a 2D array of temperature data
+# reads input .xsv file with the scan results
+# first line is the scale factor
+# the other (X,Y) (X,Y-sigma) (X,Y+sigma)
 # output file is stored in the same directory with the input file
 #------------------------------------------------------------------------------
 import codecs, argparse, sys, os, time
@@ -51,14 +53,16 @@ def process(fn):
             scale = x0/x1;
             # fout.write(str(il)+' '+' '.join(words[1:320])+'\n')
         elif (nw == 7):
-            t = float(words[0])
+            t  = float(words[0])
             x0 = float(words[1])/scale;
             x1 = float(words[3])/scale;
             x2 = float(words[5])/scale;
-            sigma = (x2-x0)/2;
-            fout.write("%10.3f %10.3f %10.3f\n"%(t,x1,sigma));
+            sigma = (x2-x1)/2;
+            fout.write("%10.3f %10.3f %10.3f\n"%(t,x0,sigma));
 
-    f.close()  #
+    f.close()
+    fout.close();
+    #
         # for line in f.readlines():
 #        print(line)
             
@@ -78,7 +82,7 @@ def process(fn):
 
 if (__name__ == '__main__'):
 
-    fn = "/projects/cms/data/ti400/csv/FB_01255.csv";
+    # fn = "/projects/cms/data/ti400/csv/FB_01255.csv";
     fn = parse_parameters();
     
     process(fn);  # 90.1 C

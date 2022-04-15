@@ -49,12 +49,12 @@
 class JinrDataset : public Dataset {
 public:
   enum { kNMomentumSlices = 16 }; // first bin empty
-  enum { kNThetaSlices    =  4 };
+  enum { kNThetaSlices    = 12 };
   enum { kNBeamMomenta    =  1 };
 
   struct Hist_t {
-    TH1F*    fD2xDpDtVsTheta    [kNMomentumSlices]; // momentum slices
-    TH1F*    fD2xDpDtVsMomentum [kNThetaSlices   ]; // theta    slices
+    TH1F*    fD2xDpDtVsTheta    [kNMomentumSlices]; // momentum slices for angular distributions
+    TH1F*    fD2xDpDtVsMomentum [kNThetaSlices   ]; // theta    slices 
     TH1F*    fD3xDp3VsTheta     [kNMomentumSlices]; // momentum    slices
     TH1F*    fD3xDp3VsEkin      [kNThetaSlices   ]; // theta    slices
   };
@@ -90,7 +90,6 @@ public:
 
   virtual int   GetMomentumSlice(float PMin , float PMax );
   virtual int   GetThetaSlice   (float ThMin, float ThMax);
-  virtual int   GetBinNumber    (TH1*  Hist , float X    );
 
   virtual void  InitLimits();
 

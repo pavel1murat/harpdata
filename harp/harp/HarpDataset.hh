@@ -48,8 +48,8 @@ public:
   enum { kNThetaSlices    =  9 };
 
   struct Hist_t {
-    TH1F*    fXsVsTheta    [kNBeamBins][kNMomentumSlices]; // momentum slices
-    TH1F*    fXsVsMomentum [kNBeamBins][kNThetaSlices]; // theta    slices
+    TH1F*    fD2xDpDtVsTheta    [kNBeamBins][kNMomentumSlices]; // momentum slices
+    TH1F*    fD2xDpDtVsMomentum [kNBeamBins][kNThetaSlices]; // theta    slices
   };
 
 public:
@@ -79,11 +79,11 @@ public:
   void  InitLimits();
 
   TH1F* GetMomentumHist(int BeamBin, int ThetaSlice   ) {
-    return fHist.fXsVsMomentum [BeamBin][ThetaSlice];
+    return fHist.fD2xDpDtVsMomentum [BeamBin][ThetaSlice];
   }
   
   TH1F* GetThetaHist   (int BeamBin, int MomentumSlice) {
-    return fHist.fXsVsTheta [BeamBin][MomentumSlice];
+    return fHist.fD2xDpDtVsTheta [BeamBin][MomentumSlice];
   }
   
 };
